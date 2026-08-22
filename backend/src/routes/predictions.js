@@ -53,7 +53,27 @@ async function listMyPredictions(req, res) {
   }
 }
 
+// GET /predictions/me - meus palpites
+async function getMyPredictions(req, res) {
+  try {
+    const user_id = req.user.id;
+    const [rows] = await db.query(
+      `SELECT p.*, CONCAT(f.athlete1_name, ' vs ', f.athlete2_name) as fight
+       FROM predictions p
+       JOIN fights f ON p.fight_id = f.id
+        WHERE p.user_id =?
+        ORDER BY p.created_at DESC`,
+      [user_id]
+    );
+    res.json(rows);
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  } 
+}
+
 router.post('/', authJWT, createPrediction);
 router.get('/my', authJWT, listMyPredictions);
+router.get('/me', authJWT, getMyPredictions);
 
 module.exports = router;
