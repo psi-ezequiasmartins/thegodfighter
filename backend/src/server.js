@@ -10,6 +10,8 @@ const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
 const predictionRoutes = require('./routes/predictions');
 const fightRoutes = require('./routes/fights');
+const rankingRoutes = require('./routes/ranking');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 app.use(cors());
@@ -19,18 +21,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/fights', fightRoutes);
+app.use('/api/ranking', rankingRoutes);
+app.use('/api/admin', adminRoutes);
 
-function healthCheck(req, res) {
+app.get('/', (req, res) => {
   res.json({ msg: "The Godfighter API ON" });
-}
+});
 
-app.get('/', healthCheck);
-app.use('/api/events', eventRoutes);
-
-function startServer() {
-  app.listen(process.env.PORT, function() {
-    console.log('API rodando em http://localhost:' + process.env.PORT);
-  });
-}
-
-startServer();
+app.listen(process.env.PORT, () => {
+  console.log('API rodando em http://localhost:' + process.env.PORT);
+});
