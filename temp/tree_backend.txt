@@ -1,0 +1,21 @@
+﻿Listagem de caminhos de pasta para o volume DATA
+O número de série do volume é 5269-70FA
+D:.
+│   .env
+│   package.json
+│   schema.sql
+│   
+└───src
+    │   server.js
+    │   
+    ├───config
+    │       db.js
+    │       
+    ├───controllers
+    ├───middleware
+    │       authJWT.js
+    │       
+    ├───models
+    └───routes
+            events.js
+            
