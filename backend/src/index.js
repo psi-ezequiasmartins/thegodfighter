@@ -1,5 +1,5 @@
 /**
- * src/server.js
+ * src/index.js
  */
 
 const express = require('express');
