@@ -39,8 +39,22 @@ function PredictionFlow() {
 
   const fetchFight = useCallback(async function () {
     try {
-      const res = await api.get('/fights/' + fightId);
-      setFight(res.data);
+      const [fightRes, myPicksRes] = await Promise.all([
+        api.get('/fights/' + fightId),
+        api.get('/predictions/me')
+      ]);
+      setFight(fightRes.data);
+
+      const existing = myPicksRes.data.find(p => String(p.fight_id) === String(fightId));
+      if (existing) {
+        setPick({
+          fight_id: fightId,
+          predicted_winner_fighter_id: existing.predicted_winner_fighter_id,
+          predicted_round: existing.predicted_round,
+          predicted_method: existing.predicted_method
+        });
+        setStep(4);
+      }
     } catch (err) {
       setStatus('Erro ao carregar a luta');
     }

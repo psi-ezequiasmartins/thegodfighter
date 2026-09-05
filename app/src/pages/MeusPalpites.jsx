@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api, { resolveImageUrl } from '../services/api';
 import { confirmDelete } from '../utils/swal';
+import { openNewPredictionModal } from '../components/predictions/NewPredictionModal';
 
 export default function MeusPalpites() {
   const [picks, setPicks] = useState([]);
@@ -47,7 +48,10 @@ export default function MeusPalpites() {
 
   return (
     <div>
-      <h1 className="text-3xl font-black mb-8">Meus Palpites</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-black">Meus Palpites</h1>
+        <button onClick={openNewPredictionModal} className="bg-[#39FF14] text-black font-black px-5 py-2.5 rounded-xl">+ Novo palpite</button>
+      </div>
 
       {status && <p className="mb-4 text-sm text-zinc-400">{status}</p>}
 
@@ -82,7 +86,10 @@ export default function MeusPalpites() {
                     {p.points ? `${p.points} PTS` : 'PENDENTE'}
                   </span>
                   {!p.locked && (
-                    <button onClick={() => removePick(p.fight_id)} className="text-xs bg-red-950/50 border border-red-900 text-red-400 px-3 py-1.5 rounded-lg">Remover</button>
+                    <>
+                      <Link to={`/fight/${p.fight_id}`} className="text-xs bg-zinc-800 border border-zinc-700 px-3 py-1.5 rounded-lg">Editar</Link>
+                      <button onClick={() => removePick(p.fight_id)} className="text-xs bg-red-950/50 border border-red-900 text-red-400 px-3 py-1.5 rounded-lg">Remover</button>
+                    </>
                   )}
                 </div>
               </div>
