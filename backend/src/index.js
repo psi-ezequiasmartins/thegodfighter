@@ -7,6 +7,7 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const db = require('./config/db');
 const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
 const predictionRoutes = require('./routes/predictions');
@@ -34,6 +35,24 @@ app.use('/api/uploads', uploadRoutes);
 
 app.get('/', (req, res) => {
   res.json({ msg: "The Godfighter API ON" });
+});
+
+// GET /api/status - checagem de saúde/conexão do servidor (público, sem autenticação)
+app.get('/api/status', async (req, res) => {
+  const status = {
+    api: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime_seconds: Math.floor(process.uptime())
+  };
+  try {
+    await db.query('SELECT 1');
+    status.database = 'ok';
+    res.json(status);
+  } catch (error) {
+    status.database = 'error';
+    status.database_error = error.message;
+    res.status(503).json(status);
+  }
 });
 
 app.listen(process.env.PORT, () => {
