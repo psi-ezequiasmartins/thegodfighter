@@ -4,7 +4,8 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://srv.guiadeeventos.online:30601/api';
 export const SERVER_ORIGIN = API_BASE_URL.replace(/\/api$/, '');
 
 // Resolve caminhos relativos (ex: /uploads/xxx.jpg) para a URL completa do backend

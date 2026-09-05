@@ -7,3 +7,6 @@
 
 # arquivos enviados via upload (imagens de eventos/lutadores)
 /uploads
+
+# environment variables
+.env
