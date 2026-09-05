@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { maskPhone, unmaskPhone } from '../utils/phone';
+import logomarca from '../assets/logomarca.png';
 
 function Login() {
   const [phone, setPhone] = useState('');
@@ -38,9 +39,12 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <div className="w-full max-w-sm bg-zinc-900 p-6 rounded-xl border border-zinc-800">
+      <div className="w-full max-w-sm p-6 rounded-xl border border-zinc-800">
+        <div className="flex justify-center mb-6">
+          <img src={logomarca} alt="Logomarca" className="h-64" /> 
+        </div>
         <h2 className="text-2xl font-bold mb-6 text-white text-center">
-          {isRegister ? 'Criar Conta' : 'Entrar'}
+          THE GODFIGHTER
         </h2>
         <form onSubmit={handleAuth} className="space-y-3">
           <input
