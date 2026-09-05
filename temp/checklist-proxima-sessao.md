@@ -1,6 +1,7 @@
 # The Godfighter - Checklist de Retomada
 
 Data de registro: 22/08/2026
+Atualizado em: 05/09/2026 - ver seção "Atualização 05/09/2026" no final do arquivo.
 
 ## Contexto consolidado
 
@@ -23,6 +24,8 @@ O telefone deve ser uma chave de negocio unica e normalizada para integrar PWA e
 
 ## Prioridade 0 - Corrigir a integridade da Fase 1
 
+Status: RESOLVIDO em 05/09/2026 (ver seção "Atualização 05/09/2026").
+
 Hipotese a validar: a apuracao de resultados falha no banco criado a partir de `temp/schema.sql`, porque o schema e as rotas usam nomes de colunas diferentes.
 
 Evidencias:
@@ -34,16 +37,16 @@ Evidencias:
 
 ### Checklist tecnico
 
-- [ ] Conferir o schema real do banco de desenvolvimento antes de qualquer alteracao.
-- [ ] Definir a convencao definitiva para resultado de luta: preferir `winner_name`, `winner_round` e `winner_method` para compatibilizar com a rota de administracao, ou ajustar todas as consultas para `result_*`.
-- [ ] Criar uma migracao SQL incremental; nao alterar silenciosamente bancos existentes.
-- [ ] Adicionar `predictions.is_correct TINYINT(1)` com valor padrao adequado.
-- [ ] Garantir que `predictions.points` e `predictions.is_correct` sejam atualizados na mesma transacao que o resultado e o bloqueio da luta.
-- [ ] Validar vencedor, round e metodo antes de salvar resultado ou palpite.
-- [ ] Validar que o vencedor informado pertence a luta correspondente.
-- [ ] Restringir criacao de eventos e lutas a administradores.
-- [ ] Retornar `404` ao tentar lancar resultado para uma luta inexistente e evitar reprocessamento acidental de uma luta ja encerrada.
-- [ ] Testar manualmente: criar evento/luta, inserir palpites, lancar resultado, confirmar pontos e conferir ranking.
+- [x] Conferir o schema real do banco de desenvolvimento antes de qualquer alteracao.
+- [x] Definir a convencao definitiva para resultado de luta: preferir `winner_name`, `winner_round` e `winner_method` para compatibilizar com a rota de administracao, ou ajustar todas as consultas para `result_*`.
+- [x] Criar uma migracao SQL incremental; nao alterar silenciosamente bancos existentes.
+- [x] Adicionar `predictions.is_correct TINYINT(1)` com valor padrao adequado. (já existia no dump atual)
+- [x] Garantir que `predictions.points` e `predictions.is_correct` sejam atualizados na mesma transacao que o resultado e o bloqueio da luta.
+- [x] Validar vencedor, round e metodo antes de salvar resultado ou palpite.
+- [x] Validar que o vencedor informado pertence a luta correspondente.
+- [x] Restringir criacao de eventos e lutas a administradores.
+- [x] Retornar `404` ao tentar lancar resultado para uma luta inexistente e evitar reprocessamento acidental de uma luta ja encerrada. (404 implementado; bloqueio de reprocessamento ainda não impede reenvio se admin quiser corrigir - avaliar se é desejado)
+- [ ] Testar manualmente: criar evento/luta, inserir palpites, lancar resultado, confirmar pontos e conferir ranking. (testado via API; falta teste end-to-end pela UI)
 
 ## Prioridade 1 - Fechar a experiencia do Quiz
 
@@ -118,3 +121,38 @@ Evidencias:
 2. Inspecionar o schema real com `DESCRIBE fights;` e `DESCRIBE predictions;`.
 3. Criar a migracao de compatibilidade e ajustar as rotas de resultado/ranking de forma consistente.
 4. Executar o teste completo de apuracao de uma luta antes de iniciar a tela de resumo ou patrocinadores.
+
+## Atualização 05/09/2026
+
+Banco renomeado para `thegodfighter` (singular). Dump atualizado em `temp/thegodfighter.sql`
+já usava `winner_name/winner_round/winner_method` e `predictions.is_correct`, então o problema
+de nomenclatura da Prioridade 0 estava resolvido antes mesmo desta sessão.
+
+Nesta sessão, o nome do competidor foi padronizado como `Fighter` (inglês no schema/código,
+"Lutador"/"Competidor" na UI em português). Principais mudanças:
+
+- Nova migração `temp/migration_002_fighters.sql`: cria tabela `fighters` (perfil do lutador:
+  nome, apelido, categoria de peso, vitórias/derrotas/empates, foto, bio) e substitui os campos
+  de texto `athlete1_name`/`athlete2_name`/`winner_name` em `fights` e `predicted_winner_name`
+  em `predictions` por FKs (`fighter1_id`, `fighter2_id`, `winner_fighter_id`,
+  `predicted_winner_fighter_id`). Migração já aplicada no banco de desenvolvimento local.
+- Backend: CRUD completo (listar/criar/editar/remover) para `fighters`, `events` e `fights`,
+  com `middleware/isAdmin.js` reutilizável protegendo as rotas de escrita. Rota de resultado
+  (`POST /api/admin/fights/:id/result`) agora valida que o vencedor pertence à luta e retorna
+  404 se a luta não existir. Predictions agora usa `predicted_winner_fighter_id` e ganhou
+  `DELETE /api/predictions/:fightId` para remover um palpite antes do bloqueio.
+- Frontend: removidos os mocks de fallback em `Events.jsx`, `Fights.jsx` e `MeusPalpites.jsx`,
+  substituídos por estados reais de carregamento/vazio/erro. `PredictionFlow.jsx` e
+  `AdminResult.jsx` atualizados para trabalhar com `fighter_id` (o `AdminResult.jsx` também
+  corrigiu um bug: postava para a rota errada `/fights/:id/result` com campos que não batiam
+  com o backend). Novas telas administrativas: `AdminEvents.jsx`, `AdminFights.jsx`,
+  `AdminFighters.jsx`, protegidas por `components/AdminRoute.jsx` (só usuários com
+  `role === 'admin'`), com links correspondentes no `Navbar.jsx`.
+- Testado manualmente via API (login, listar, criar, editar, remover fighters/events/fights;
+  conflito 409 ao remover evento com luta associada). Falta testar o fluxo pela UI do navegador.
+
+### Próximos passos sugeridos
+- [ ] Testar o CRUD completo navegando pela UI (não só via API).
+- [ ] Avaliar se `POST /admin/fights/:id/result` deve bloquear reenvio de resultado já lançado
+      (hoje permite corrigir, o que pode ser desejado ou não).
+- [ ] Seguir para Prioridade 1 (fechar experiência do quiz) e Prioridade 2 (PWA) do checklist.

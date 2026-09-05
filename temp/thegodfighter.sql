@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 22, 2026 at 07:12 PM
--- Server version: 8.0.45
--- PHP Version: 8.2.30
+-- Tempo de geração: 05/09/2026 às 17:25
+-- Versão do servidor: 8.0.45
+-- Versão do PHP: 8.2.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,34 +18,36 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `thegodfighter_db`
+-- Banco de dados: `thegodfighter`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
+-- Estrutura para tabela `events`
 --
 
 CREATE TABLE `events` (
   `id` int NOT NULL,
   `name` varchar(150) NOT NULL,
   `event_date` datetime NOT NULL,
-  `status` enum('open','live','closed') DEFAULT 'open'
+  `status` enum('open','live','closed') DEFAULT 'open',
+  `fights_count` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `events`
+-- Despejando dados para a tabela `events`
 --
 
-INSERT INTO `events` (`id`, `name`, `event_date`, `status`) VALUES
-(1, 'UFC 320 - Teste', '2026-08-22 11:28:49', 'open'),
-(2, 'UFC 321 TESTE', '2026-08-22 19:00:00', 'open');
+INSERT INTO `events` (`id`, `name`, `event_date`, `status`, `fights_count`) VALUES
+(1, 'The God Fighter - Edição 01', '2026-07-15 11:28:49', 'open', 12),
+(2, 'UFC 319 - Edição 98        ', '2026-07-21 19:00:00', 'open', 8),
+(3, 'UFC 320 - Edição 99        ', '2026-08-15 19:00:00', 'closed', 10);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `fights`
+-- Estrutura para tabela `fights`
 --
 
 CREATE TABLE `fights` (
@@ -60,7 +62,7 @@ CREATE TABLE `fights` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `fights`
+-- Despejando dados para a tabela `fights`
 --
 
 INSERT INTO `fights` (`id`, `event_id`, `athlete1_name`, `athlete2_name`, `locked`, `winner_name`, `winner_round`, `winner_method`) VALUES
@@ -70,7 +72,7 @@ INSERT INTO `fights` (`id`, `event_id`, `athlete1_name`, `athlete2_name`, `locke
 -- --------------------------------------------------------
 
 --
--- Table structure for table `predictions`
+-- Estrutura para tabela `predictions`
 --
 
 CREATE TABLE `predictions` (
@@ -86,7 +88,7 @@ CREATE TABLE `predictions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `predictions`
+-- Despejando dados para a tabela `predictions`
 --
 
 INSERT INTO `predictions` (`id`, `user_id`, `fight_id`, `predicted_winner_name`, `predicted_round`, `predicted_method`, `points`, `is_correct`, `created_at`) VALUES
@@ -96,7 +98,7 @@ INSERT INTO `predictions` (`id`, `user_id`, `fight_id`, `predicted_winner_name`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Estrutura para tabela `users`
 --
 
 CREATE TABLE `users` (
@@ -109,31 +111,31 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `users`
+-- Despejando dados para a tabela `users`
 --
 
 INSERT INTO `users` (`id`, `phone`, `name`, `role`, `verified`, `created_at`) VALUES
 (1, '31984107540', 'Ezequias Martins', 'admin', 0, '2026-08-22 14:23:52');
 
 --
--- Indexes for dumped tables
+-- Índices para tabelas despejadas
 --
 
 --
--- Indexes for table `events`
+-- Índices de tabela `events`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `fights`
+-- Índices de tabela `fights`
 --
 ALTER TABLE `fights`
   ADD PRIMARY KEY (`id`),
   ADD KEY `event_id` (`event_id`);
 
 --
--- Indexes for table `predictions`
+-- Índices de tabela `predictions`
 --
 ALTER TABLE `predictions`
   ADD PRIMARY KEY (`id`),
@@ -142,52 +144,52 @@ ALTER TABLE `predictions`
   ADD KEY `fight_id` (`fight_id`);
 
 --
--- Indexes for table `users`
+-- Índices de tabela `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `phone` (`phone`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT for table `events`
+-- AUTO_INCREMENT de tabela `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `fights`
+-- AUTO_INCREMENT de tabela `fights`
 --
 ALTER TABLE `fights`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `predictions`
+-- AUTO_INCREMENT de tabela `predictions`
 --
 ALTER TABLE `predictions`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT de tabela `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- Constraints for dumped tables
+-- Restrições para tabelas despejadas
 --
 
 --
--- Constraints for table `fights`
+-- Restrições para tabelas `fights`
 --
 ALTER TABLE `fights`
   ADD CONSTRAINT `fights_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`);
 
 --
--- Constraints for table `predictions`
+-- Restrições para tabelas `predictions`
 --
 ALTER TABLE `predictions`
   ADD CONSTRAINT `predictions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),

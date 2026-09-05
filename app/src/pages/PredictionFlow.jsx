@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
+import api, { resolveImageUrl } from '../services/api';
 
 function Stepper({ current }) {
   return (
@@ -29,7 +29,7 @@ function PredictionFlow() {
   const [step, setStep] = useState(1);
   const [pick, setPick] = useState({
     fight_id: fightId,
-    predicted_winner_name: '',
+    predicted_winner_fighter_id: null,
     predicted_round: null,
     predicted_method: ''
   });
@@ -42,7 +42,7 @@ function PredictionFlow() {
       const res = await api.get('/fights/' + fightId);
       setFight(res.data);
     } catch (err) {
-      setFight({ athlete1_name: 'Atleta 1', athlete2_name: 'Atleta 2', event_id: 1 });
+      setStatus('Erro ao carregar a luta');
     }
   }, [fightId]);
 
@@ -50,8 +50,8 @@ function PredictionFlow() {
     fetchFight();
   }, [fetchFight]);
 
-  function selectWinner(name) {
-    setPick({ ...pick, predicted_winner_name: name });
+  function selectWinner(fighterId) {
+    setPick({ ...pick, predicted_winner_fighter_id: fighterId });
     setStep(2);
   }
 
@@ -83,39 +83,66 @@ function PredictionFlow() {
     return <p className="p-10 text-center text-zinc-400">Carregando luta...</p>;
   }
 
-  const athlete1 = fight.athlete1_name || fight.athlete1 || 'Atleta 1';
-  const athlete2 = fight.athlete2_name || fight.athlete2 || 'Atleta 2';
+  const fighter1Id = fight.fighter1_id;
+  const fighter2Id = fight.fighter2_id;
+  const fighter1 = fight.fighter1_name || 'Lutador 1';
+  const fighter2 = fight.fighter2_name || 'Lutador 2';
+  const fighter1Photo = resolveImageUrl(fight.fighter1_photo_url);
+  const fighter2Photo = resolveImageUrl(fight.fighter2_photo_url);
   const eventId = fight.event_id || 1;
 
   return (
-    <div className="p-6 bg-zinc-900 text-white rounded-2xl max-w-md mx-auto border border-zinc-800">
-      {/* BREADCRUMB QUE REALMENTE NAVEGA */}
-      <div className="flex justify-between items-center mb-6">
-        <Link to="/events" className="text-sm text-zinc-400 hover:text-white">
-          ← Eventos
-        </Link>
-        <Link to={`/events/${eventId}`} className="text-sm text-zinc-400 hover:text-white">
-          Voltar ao evento
-        </Link>
-      </div>
-
-      <h2 className="text-2xl font-black my-2 tracking-tight">{athlete1} vs {athlete2}</h2>
-      
-      <Stepper current={step} />
-
-      {step === 1 && (
-        <div>
-          <p className="mb-3 text-zinc-400 text-sm">Passo 1 de 4 - Quem vence?</p>
-          <div className="grid grid-cols-2 gap-3">
-            <button onClick={function () { selectWinner(athlete1); }} className="bg-white text-black px-4 py-4 rounded-xl font-bold hover:bg-zinc-200 transition">
-              {athlete1}
-            </button>
-            <button onClick={function () { selectWinner(athlete2); }} className="bg-white text-black px-4 py-4 rounded-xl font-bold hover:bg-zinc-200 transition">
-              {athlete2}
-            </button>
+    <div className="bg-zinc-900 text-white rounded-2xl max-w-xl mx-auto border border-zinc-800 overflow-hidden">
+      {(fighter1Photo || fighter2Photo) && (
+        <div className="relative w-full h-48 sm:h-56 flex">
+          <div className="w-1/2 h-full">
+            {fighter1Photo ? (
+              <img src={fighter1Photo} alt={fighter1} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-zinc-800" />
+            )}
+          </div>
+          <div className="w-1/2 h-full">
+            {fighter2Photo ? (
+              <img src={fighter2Photo} alt={fighter2} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-zinc-800" />
+            )}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-black/80 border border-zinc-700 text-white text-sm font-black w-12 h-12 rounded-full flex items-center justify-center">VS</span>
           </div>
         </div>
       )}
+
+      <div className="p-6">
+        {/* BREADCRUMB QUE REALMENTE NAVEGA */}
+        <div className="flex justify-between items-center mb-6">
+          <Link to="/events" className="text-sm text-zinc-400 hover:text-white">
+            ← Eventos
+          </Link>
+          <Link to={`/events/${eventId}`} className="text-sm text-zinc-400 hover:text-white">
+            Voltar ao evento
+          </Link>
+        </div>
+
+        <h2 className="text-2xl font-black my-2 tracking-tight text-center">{fighter1} vs {fighter2}</h2>
+
+        <Stepper current={step} />
+
+        {step === 1 && (
+          <div>
+            <p className="mb-3 text-zinc-400 text-sm">Passo 1 de 4 - Quem vence?</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={function () { selectWinner(fighter1Id); }} className="bg-white text-black px-4 py-4 rounded-xl font-bold hover:bg-zinc-200 transition">
+                {fighter1}
+              </button>
+              <button onClick={function () { selectWinner(fighter2Id); }} className="bg-white text-black px-4 py-4 rounded-xl font-bold hover:bg-zinc-200 transition">
+                {fighter2}
+              </button>
+            </div>
+          </div>
+        )}
 
       {step === 2 && (
         <div>
@@ -145,7 +172,7 @@ function PredictionFlow() {
           
           <div className="bg-black/50 p-4 rounded-xl border border-zinc-800 mb-4">
             <p className="text-xs text-zinc-500 uppercase tracking-widest">Seu palpite</p>
-            <p className="font-bold text-lg mt-1">{pick.predicted_winner_name} no Round {pick.predicted_round} por {pick.predicted_method}</p>
+            <p className="font-bold text-lg mt-1">{pick.predicted_winner_fighter_id === fighter1Id ? fighter1 : fighter2} no Round {pick.predicted_round} por {pick.predicted_method}</p>
           </div>
 
           <button 
@@ -171,6 +198,7 @@ function PredictionFlow() {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }

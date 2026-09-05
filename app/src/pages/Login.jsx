@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { maskPhone, unmaskPhone } from '../utils/phone';
 
 function Login() {
   const [phone, setPhone] = useState('');
@@ -13,12 +14,16 @@ function Login() {
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
+  function handlePhoneChange(event) {
+    setPhone(maskPhone(event.target.value));
+  }
+
   async function handleAuth(event) {
     event.preventDefault();
     setMsg('Carregando...');
     try {
       const endpoint = isRegister ? '/auth/register' : '/auth/login';
-      const payload = isRegister ? { phone, name } : { phone };
+      const payload = isRegister ? { phone: unmaskPhone(phone), name } : { phone: unmaskPhone(phone) };
 
       const res = await api.post(endpoint, payload);
       localStorage.setItem('tgf_token', res.data.token);
@@ -40,8 +45,10 @@ function Login() {
         <form onSubmit={handleAuth} className="space-y-3">
           <input
             value={phone}
-            onChange={(e)=> setPhone(e.target.value)}
-            placeholder="Telefone (ex: 31999999999)"
+            onChange={handlePhoneChange}
+            placeholder="(31) 99999-9999"
+            inputMode="numeric"
+            maxLength={15}
             className="w-full p-3 bg-black rounded border border-zinc-700 text-white placeholder-zinc-500 focus:border-white outline-none"
             required
           />

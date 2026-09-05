@@ -4,8 +4,18 @@
 
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:3001/api';
+export const SERVER_ORIGIN = API_BASE_URL.replace(/\/api$/, '');
+
+// Resolve caminhos relativos (ex: /uploads/xxx.jpg) para a URL completa do backend
+export function resolveImageUrl(path) {
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${SERVER_ORIGIN}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api'
+  baseURL: API_BASE_URL
 });
 
 function getToken() {

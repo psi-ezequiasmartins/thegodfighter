@@ -4,3 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
+
+# arquivos enviados via upload (imagens de eventos/lutadores)
+/uploads

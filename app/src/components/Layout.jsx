@@ -6,7 +6,9 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 
 export default function Layout({ children }) {
   const navigate = useNavigate();
-  
+  const user = JSON.parse(localStorage.getItem('tgf_user') || '{}');
+  const isAdmin = user.role === 'admin';
+
   const logout = () => {
     localStorage.clear();
     navigate('/');
@@ -25,6 +27,14 @@ export default function Layout({ children }) {
             <NavLink to="/events" className={linkClass}>🏟️ Eventos</NavLink>
             <NavLink to="/ranking" className={linkClass}>🏆 Ranking</NavLink>
             <NavLink to="/profile" className={linkClass}>👤 Meus Palpites</NavLink>
+            {isAdmin && (
+              <>
+                <p className="px-4 pt-6 pb-1 text-[10px] uppercase tracking-widest text-zinc-600 font-bold">Admin</p>
+                <NavLink to="/admin/events" className={linkClass}>📅 Eventos</NavLink>
+                <NavLink to="/admin/fighters" className={linkClass}>🥊 Lutadores</NavLink>
+                <NavLink to="/admin/users" className={linkClass}>👥 Usuários</NavLink>
+              </>
+            )}
           </nav>
         </div>
         <button onClick={logout} className="text-left px-4 py-3 text-zinc-500 hover:text-white">Sair →</button>

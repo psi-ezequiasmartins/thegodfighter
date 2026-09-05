@@ -25,6 +25,19 @@ function Navbar() {
           <Link to="/events" className="text-sm text-zinc-400 hover:text-white">
             Eventos
           </Link>
+          {user.role === 'admin' && (
+            <>
+              <Link to="/admin/events" className="text-sm text-zinc-400 hover:text-white">
+                Admin Eventos
+              </Link>
+              <Link to="/admin/fighters" className="text-sm text-zinc-400 hover:text-white">
+                Lutadores
+              </Link>
+              <Link to="/admin/users" className="text-sm text-zinc-400 hover:text-white">
+                Usuários
+              </Link>
+            </>
+          )}
           <span className="text-sm text-zinc-600">
             {user.name || ''}
           </span>
