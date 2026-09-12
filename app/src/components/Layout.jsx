@@ -4,9 +4,7 @@
 
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 // Importação corrigida para a Web:
-import { AiOutlineCalendar, AiOutlineTrophy, AiOutlineFileText } from 'react-icons/ai'; 
 import { FaSitemap, FaFileSignature, FaListOl, FaUsersCog, FaUserShield, FaMedal, FaWalking } from "react-icons/fa";
-import { MdSportsMma, MdSupervisedUserCircle, MdLogout } from 'react-icons/md';
 import icon from '../assets/icon.png';
 
 export default function Layout({ children }) {
