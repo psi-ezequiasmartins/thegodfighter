@@ -38,7 +38,7 @@ export default function Layout({ children }) {
             <NavLink to="/profile" className={linkClass}><AiOutlineFileText size={32} /> MEUS PALPITES</NavLink>
             {isAdmin && (
               <>
-                <p className="px-4 pt-6 pb-1 text-[10px] uppercase tracking-widest text-zinc-600 font-bold">Admin</p>
+                <p className="px-4 pt-6 pb-1 text-[10px] uppercase tracking-widest text-zinc-600 font-bold">ADMINISTRATOR</p>
                 <NavLink to="/admin/events" className={linkClass}><AiOutlineCalendar size={32} /> EVENTOS</NavLink>
                 <NavLink to="/admin/fighters" className={linkClass}><MdSportsMma size={32} /> LUTADORES</NavLink>
                 <NavLink to="/admin/users" className={linkClass}><MdSupervisedUserCircle size={32} /> USUÁRIOS</NavLink>
