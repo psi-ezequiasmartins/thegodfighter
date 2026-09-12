@@ -5,6 +5,7 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 // Importação corrigida para a Web:
 import { AiOutlineCalendar, AiOutlineTrophy, AiOutlineFileText } from 'react-icons/ai'; 
+import { FaSitemap, FaFileSignature, FaListOl, FaUsersCog, FaUserShield, FaMedal, FaWalking } from "react-icons/fa";
 import { MdSportsMma, MdSupervisedUserCircle, MdLogout } from 'react-icons/md';
 import icon from '../assets/icon.png';
 
@@ -31,17 +32,20 @@ export default function Layout({ children }) {
         <div>
           <img src={icon} className="mb-4 w-16 h-16 mx-auto" alt="TheGodFighterLogo" />
           <h1 className="font-black text-lg leading-none mb-6 tracking-widest text-center">TheGodFighter</h1>
+          <hr className="border-zinc-800" />
+          <p className="px-4 py-2 text-zinc-400">{user.name}</p>
           <hr className="border-zinc-800 mb-4" />
           <nav className="flex flex-col gap-1">
-            <NavLink to="/events" className={linkClass}><AiOutlineCalendar size={32} /> EVENTOS</NavLink>
-            <NavLink to="/ranking" className={linkClass}><AiOutlineTrophy size={32} /> RANKING</NavLink>
-            <NavLink to="/profile" className={linkClass}><AiOutlineFileText size={32} /> MEUS PALPITES</NavLink>
+            <NavLink to="/events" className={linkClass}><FaSitemap  size={32} /> EVENTOS</NavLink>
+            <NavLink to="/ranking" className={linkClass}><FaMedal size={32} /> RANKING</NavLink>
+            <NavLink to="/profile" className={linkClass}><FaFileSignature size={32} /> MEUS PALPITES</NavLink>
             {isAdmin && (
               <>
                 <p className="px-4 pt-6 pb-1 text-[10px] uppercase tracking-widest text-zinc-600 font-bold">ADMINISTRATOR</p>
-                <NavLink to="/admin/events" className={linkClass}><AiOutlineCalendar size={32} /> EVENTOS</NavLink>
-                <NavLink to="/admin/fighters" className={linkClass}><MdSportsMma size={32} /> LUTADORES</NavLink>
-                <NavLink to="/admin/users" className={linkClass}><MdSupervisedUserCircle size={32} /> USUÁRIOS</NavLink>
+                {/* <hr className="border-zinc-800 mb-4" /> */}
+                <NavLink to="/admin/events" className={linkClass}><FaListOl size={32} /> EVENTOS</NavLink>
+                <NavLink to="/admin/fighters" className={linkClass}><FaUsersCog size={32} /> LUTADORES</NavLink>
+                <NavLink to="/admin/users" className={linkClass}><FaUserShield size={32} /> USUÁRIOS</NavLink>
               </>
             )}
           </nav>
@@ -49,11 +53,10 @@ export default function Layout({ children }) {
 
         {/* Bloco de Logout com linha separadora superior */}
         <div className="flex flex-col gap-2">
-          <p className="px-4 py-2 text-zinc-400">{user.name}</p>
           <hr className="border-zinc-800" />
           <button onClick={logout} 
             className="text-left px-4 py-3 text-zinc-500 hover:text-white flex items-center gap-3">
-              <MdLogout size={32} /> Sair
+              <FaWalking size={32} /> Sair
           </button>        
         </div>
         
