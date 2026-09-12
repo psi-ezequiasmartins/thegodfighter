@@ -2,8 +2,10 @@
  * src/pages/Events.jsx
  */
 
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { AiOutlineArrowRight } from 'react-icons/ai';
+
 import api, { resolveImageUrl } from '../services/api';
 
 export default function Events() {
@@ -46,7 +48,7 @@ export default function Events() {
         <div className="flex items-center gap-3">
           <span className="text-xs bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full text-zinc-400">{events.length} eventos</span>
           {isAdmin && (
-            <Link to="/admin/events" className="text-xs bg-[#39FF14] text-black font-black px-3 py-1.5 rounded-full">+ Gerenciar eventos</Link>
+            <Link to="/admin/events" className="text-xs bg-[#39FF14] text-black font-black px-3 py-1.5 rounded-full">GERENCIAR EVENTOS</Link>
           )}
         </div>
       </div>
@@ -86,7 +88,9 @@ export default function Events() {
                       Editar lutas
                     </Link>
                   )}
-                  <Link to={`/events/${event.id}`} className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold group-hover:scale-110 transition">→</Link>
+                  <Link to={`/events/${event.id}`} className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold group-hover:scale-110 transition">
+                    <AiOutlineArrowRight size={24} />
+                  </Link>
                 </div>
               </div>
             </div>

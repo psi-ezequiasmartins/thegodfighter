@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 import api, { resolveImageUrl } from '../services/api';
 
 export default function Fights() {
@@ -46,7 +47,7 @@ export default function Fights() {
 
   return (
     <div>
-      <Link to="/events" className="text-sm text-zinc-400 hover:text-white mb-6 inline-block">← Todos os eventos</Link>
+      <Link to="/events" className="text-sm text-zinc-400 hover:text-white mb-6 inline-block"><AiOutlineArrowLeft size={16} className="inline-block mr-1" />Todos os eventos</Link>
 
       <div className="mb-8">
         <div className="flex justify-between items-start">

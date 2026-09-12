@@ -50,7 +50,7 @@ export default function MeusPalpites() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-black">Meus Palpites</h1>
-        <button onClick={openNewPredictionModal} className="bg-[#39FF14] text-black font-black px-5 py-2.5 rounded-xl">+ Novo palpite</button>
+        <button onClick={openNewPredictionModal} className="bg-[#39FF14] text-black font-black px-5 py-2.5 rounded-xl">NOVO PALPITE</button>
       </div>
 
       {status && <p className="mb-4 text-sm text-zinc-400">{status}</p>}
